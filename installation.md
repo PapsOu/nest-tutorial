@@ -4,6 +4,10 @@ description: Création d'un projet basé sur Nest
 
 # Installation
 
+{% hint style="danger" %}
+Article en cours de rédaction
+{% endhint %}
+
 ## Installer nest-cli
 
 Installer l'outil en ligne de commande de façon globale :
