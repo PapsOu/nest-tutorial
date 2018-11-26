@@ -57,14 +57,14 @@ $ npm run start
 
 Notre projet contient désormais les éléments suivants :
 
->
-
 ![Arbre des fichiers et dossier du projet Nest](.gitbook/assets/20181126-215444.png)
 
 ## Le point d'entrée
 
-Le fichier `src/main.ts` est le point d'entrée de notre application. Il contient peu de choses mais cela suffit à créer l'application et à lancer le serveur node.js.
+Le fichier `main.ts` est le point d'entrée de notre application. Il contient peu de choses mais cela suffit à créer l'application et à lancer le serveur node.js.
 
+{% code-tabs %}
+{% code-tabs-item title="src/main.ts" %}
 ```typescript
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -75,6 +75,8 @@ async function bootstrap() {
 }
 bootstrap();
 ```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
 
 ## Le module principal
 
@@ -86,6 +88,8 @@ Cette bonne pratique s'appelle [Feature Module](https://angular.io/guide/feature
 
 Voici le contenu de notre module principal :
 
+{% code-tabs %}
+{% code-tabs-item title="src/app.module.ts" %}
 ```typescript
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -98,6 +102,8 @@ import { AppService } from './app.service';
 })
 export class AppModule {}
 ```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
 
 Le [décorateur](https://docs.nestjs.com/custom-decorators)`@Module` permet la configuration du module et de ses éléments le constituant : Contrôleurs, Services, Modules et/ou Services dépendants, Configuration, etc.
 
@@ -120,5 +126,57 @@ Exemple :
 Le service `AppService` sera donc disponible pour les autres modules ayant importé notre module.
 {% endhint %}
 
-\`\`
+## Un service basique
+
+Un exemple de service a été généré par Nest
+
+{% code-tabs %}
+{% code-tabs-item title="app.service.ts" %}
+```typescript
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class AppService {
+  root(): string {
+    return 'Hello World!';
+  }
+}
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+Ce service expose simplement une méthode retournant la chaîne `Hello World!`.
+
+## Un contrôleur
+
+Un contrôleur basique est également généré lors de l'installation.
+
+{% code-tabs %}
+{% code-tabs-item title="app.controller.ts" %}
+```typescript
+import { Get, Controller } from '@nestjs/common';
+import { AppService } from './app.service';
+
+@Controller()
+export class AppController {
+  constructor(
+    private readonly appService: AppService
+  ) {}
+
+  @Get()
+  root(): string {
+    return this.appService.root();
+  }
+}
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+Il appelle notre service `AppService` afin d'afficher la chaîne `Hello World!`.
+
+{% hint style="warning" %}
+Ce contrôleur montre un exemple d'injection de dépendance par constructeur. Nest propose également l'[injection de dépendance sur des propriétés](https://docs.nestjs.com/providers) \(section _**Property-based injection**_\), mais cette méthode n'est pas conseillée par l'équipe Nest.
+{% endhint %}
+
+
 
