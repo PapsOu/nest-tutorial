@@ -54,12 +54,6 @@ import { CommonModule } from '@common/common.module';
 import { UserModule } from '@user/user.module';
 ```
 
-_Mais tout ne se passe pas tout le temps comme prévu..._
-
-{% hint style="success" %}
-Pensez à faire des **builds de production** de temps en temps pour pouvoir traiter ce genre de problème au plus tôt dans votre processus de développement
-{% endhint %}
-
 #### Build de production
 
 Si on tente de compiler l'application en mode production `npm run start:prod`, nous avons le droit à une erreur :
@@ -148,6 +142,10 @@ Maintenant, lorsque nous lançons le build de prod, tout fonctionne :
 [Nest] 10849   - 27/11/2018 à 09:22:21   [RouterExplorer] Mapped {/, GET} route +2ms
 [Nest] 10849   - 27/11/2018 à 09:22:21   [NestApplication] Nest application successfully started +2ms
 ```
+
+{% hint style="success" %}
+Pensez à faire des **builds de production** de temps en temps pour pouvoir traiter ce genre de problème au plus tôt dans votre processus de développement
+{% endhint %}
 
 #### Tests
 
@@ -281,6 +279,8 @@ module.exports = {
 
 Modifions notre point d'entrée afin de prendre en charge le remplacement de module à chaud :
 
+{% code-tabs %}
+{% code-tabs-item title="src/main.ts" %}
 ```typescript
 // On déclare une constante globale pour le support du HMR
 declare const module: any;
@@ -297,8 +297,10 @@ async function bootstrap() {
 }
 bootstrap();
 ```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
 
-Ajoutons au fichier `package.json` le script de démarrage de webpack :
+Ajoutons au fichier `package.json` le script de démarrage de webpack et modifions le script de lancement du serveur :
 
 {% code-tabs %}
 {% code-tabs-item title="package.json" %}
@@ -306,6 +308,7 @@ Ajoutons au fichier `package.json` le script de démarrage de webpack :
 {
   "scripts": {
     "webpack": "webpack --config webpack.config.js",
+    "start": "node dist/server",
   }
 }
 ```
@@ -372,21 +375,241 @@ npm run start
 
 Notre serveur est donc accessible \(curl [http://localhost:3000/](http://localhost:3000/)\) et webpack recompilera le nécessaire lors des changements dans nos modules.
 
+Si on modifie, par exemple, le module `@common/common.module.ts`, webpack va recompiler que ce module, le module principal `app.module.ts` et le point d'entrée `main.ts`:
+
+```bash
+                                  Asset      Size  Chunks             Chunk Names
+   92eee5cc06cff90a567d.hot-update.json  46 bytes          [emitted]
+                   dist/app.module.d.ts  35 bytes          [emitted]
+         dist/common/common.module.d.ts  58 bytes          [emitted]
+                         dist/main.d.ts  11 bytes          [emitted]
+main.92eee5cc06cff90a567d.hot-update.js  1.48 KiB    main  [emitted]  main
+                              server.js    43 KiB    main  [emitted]  main
+Entrypoint main = server.js main.92eee5cc06cff90a567d.hot-update.js
+[./src/app.module.ts] 1.27 KiB {main} [built]
+[./src/common/common.module.ts] 1020 bytes {main} [built]
+    + 11 hidden modules
+```
+
+Du côté du serveur, il est indiqué les éléments qui ont été rechargés pendant l'exécution :
+
+```bash
+[Nest] 23373   - 27/11/2018 à 10:42:58   [NestFactory] Starting Nest application... +23246ms
+[HMR] Updated modules:
+[HMR]  - ./src/app.module.ts
+[HMR]  - ./src/main.ts
+[HMR]  - ./src/common/common.module.ts
+[HMR] Update applied.
+[Nest] 23373   - 27/11/2018 à 10:42:58   [InstanceLoader] CommonModule dependencies initialized +2ms
+[Nest] 23373   - 27/11/2018 à 10:42:58   [InstanceLoader] UserModule dependencies initialized +0ms
+[Nest] 23373   - 27/11/2018 à 10:42:58   [InstanceLoader] AppModule dependencies initialized +0ms
+[Nest] 23373   - 27/11/2018 à 10:42:58   [RoutesResolver] AppController {/}: +0ms
+[Nest] 23373   - 27/11/2018 à 10:42:58   [RouterExplorer] Mapped {/, GET} route +1ms
+[Nest] 23373   - 27/11/2018 à 10:42:58   [NestApplication] Nest application successfully started +0ms
+```
+
 ### Dotenv
 
 Le composant [dotenv](https://github.com/motdotla/dotenv) permet d'exploiter des fichiers de configuration définissant des variables d’environnement, généralement nommés `.env`, comme son nom l'indique.
 
-// TODO: installation et usage.
+Installons le package :
+
+```bash
+$ npm i --save dotenv
+```
+
+Créons notre fichier `.env`qui contiendra notre configuration sous forme de variables d'environnement :
+
+{% code-tabs %}
+{% code-tabs-item title=".env" %}
+```bash
+APP_NAME = "Nest application"
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+Ensuite, il faut charger ces variables d'environnement. On peu le faire n'importe où, comme dans une classe dédiée au chargement et aux accès aux paramètres, ou bien plus simplement, dans le point d'entrée :
+
+{% code-tabs %}
+{% code-tabs-item title="src/main.ts" %}
+```typescript
+import * as dotenv from 'dotenv';
+
+async function bootstrap() {
+  // [...]
+}
+
+dotenv.config(); // Load configuration before bootstrapping
+
+bootstrap();
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+Maintenant, depuis n'importe quel élément de notre application, on accède à nos variables d'environnement de cette façon :
+
+{% code-tabs %}
+{% code-tabs-item title="src/app.service.ts" %}
+```typescript
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class AppService {
+  root(): string {
+    return process.env.APP_NAME ?
+      process.env.APP_NAME :
+      'No app name configured'
+  }
+}
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+{% hint style="success" %}
+Il est vivement conseillé de faire une classe de gestion de configuration afin de consolider l'accès aux variables d'environnement. Sur l'exemple précédent, nous devons vérifier l'existence de la variable manuellement, mais une classe gérant cela peut faciliter et consolider l'usage de ces variables d'environnement.
+{% endhint %}
 
 ### Validation
 
 Basé sur le composant [class-validator](https://github.com/typestack/class-validator), un Pipe prêt à l'emploi est intégrable à toute l'application afin de permettre une validation de tout objet utilisant les [décorateurs de validation](https://github.com/typestack/class-validator#validation-decorators).
 
-// TODO: Installation, déclaration globale et usage.
+Installation du package de validation \(ainsi que le package de transformation de classe\):
+
+```bash
+$ npm i --save class-validator class-transformer
+```
+
+On va appliquer la validation de façon générale à l'application, cela évitera d'éventuels oublis et limitera la quantité de décorateur sur des méthodes de contrôleur ou de services.
+
+{% code-tabs %}
+{% code-tabs-item title="src/main.ts" %}
+```typescript
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import * as dotenv from 'dotenv';
+import { AppModule } from './app.module';
+
+declare const module: any;
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Use global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true // When validating DTO, force transformation of data into a DTO class
+    })  
+  )
+
+  await app.listen(3000);
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
+}
+
+dotenv.config(); // Load configuration before bootstrapping
+
+bootstrap();
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+Créons un [DTO](https://fr.wikipedia.org/wiki/Objet_de_transfert_de_donn%C3%A9es) qui sera validé lors du traitement de la requête :
+
+{% code-tabs %}
+{% code-tabs-item title="src/common/dto/createExampleDto.ts" %}
+```typescript
+import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+
+export class CreateExampleDto {
+  @IsEmail()
+  public readonly email!: string
+
+  @MinLength(3)
+  @IsNotEmpty()
+  public readonly name!: string
+}
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+Le validateur vérifiera que la propriété `email`est bien sous la forme d'un email \(il est possible de vérifier les MX via des options de configuration\), la propriété `name`sera validée si elle n'est pas vide et si la longueur de la chaîne n'est pas inférieure à 3 caractères.
+
+Ajoutons à notre contrôleur basique une méthode qui va gérer la création d'une resource via la méthode http POST :
+
+```typescript
+import { Controller, Post, Body } from '@nestjs/common';
+import { CreateExampleDto } from '@common/dto/create-example-dto';
+
+@Controller()
+export class AppController {
+
+  // [...]
+
+  @Post()
+  displayName(
+    @Body() createExampleDto: CreateExampleDto
+  ): CreateExampleDto {
+    return createExampleDto;
+  }
+}
+```
+
+Testons notre DTO et sa validation :
+
+```bash
+$ curl -d '{"email":"email@email.org","name":"Nest"}' \
+  -H "Content-Type: application/json" \
+  -X POST http://localhost:3000/
+
+{"email":"email@email.org","name":"Nest"}
+```
+
+Avec des données erronées :
+
+```bash
+curl -d '{"email":"not an email","name":""}' \
+-H "Content-Type: application/json" \
+-X POST http://localhost:3000/
+
+{
+  "statusCode": 400,
+  "error": "Bad Request",
+  "message": [
+    {
+      "target": {
+        "email": "not an email",
+        "name": ""
+      },
+      "value": "not an email",
+      "property": "email",
+      "children": [],
+      "constraints": {
+        "isEmail": "email must be an email"
+      }
+    },
+    {
+      "target": {
+        "email": "not an email",
+        "name": ""
+      },
+      "value": "",
+      "property": "name",
+      "children": [],
+      "constraints": {
+        "isNotEmpty": "name should not be empty",
+        "minLength": "name must be longer than or equal to 3 characters"
+      }
+    }
+  ]
+}
+```
 
 ### TypeORM
 
 Le composant d'[ORM](https://fr.wikipedia.org/wiki/Mapping_objet-relationnel) [TypeORM](http://typeorm.io) est l'un des ORMs les plus complets pour l’environnement node.js. Pour ceux qui connaissent [Doctrine](https://www.doctrine-project.org/projects/orm.html), l'ORM le plus connu pour php, vous ne serez pas trop dépaysés avec TypeORM.
 
-// TODO: Installation, configuration + lien vers section dédiée.
+
 
