@@ -63,7 +63,7 @@ $ npm run start
 
 Notre projet contient désormais les éléments suivants :
 
-![Arbre des fichiers et dossier du projet Nest](.gitbook/assets/20181126-215444.png)
+![Arbre des fichiers et dossier du projet Nest](../.gitbook/assets/20181126-215444.png)
 
 ### Le point d'entrée
 
