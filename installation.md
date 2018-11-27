@@ -59,11 +59,13 @@ $ cd nest-tutorial
 $ npm run start
 ```
 
+## Structure du projet
+
 Notre projet contient désormais les éléments suivants :
 
 ![Arbre des fichiers et dossier du projet Nest](.gitbook/assets/20181126-215444.png)
 
-## Le point d'entrée
+### Le point d'entrée
 
 Le fichier `main.ts` est le point d'entrée de notre application. Il contient peu de choses mais cela suffit à créer l'application et à lancer le serveur node.js.
 
@@ -82,7 +84,7 @@ bootstrap();
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-## Le module principal
+### Le module principal
 
 Comme pour Angular, toute application doit comporter au moins un module. Il est possible \(et même plutôt conseillé\) de faire des modules séparés selon les fonctionnalités principales de notre application.
 
@@ -130,7 +132,7 @@ Exemple :
 Le service `AppService` sera donc disponible pour les autres modules ayant importé notre module.
 {% endhint %}
 
-## Un service basique
+### Un service basique
 
 Un exemple de service a été généré par Nest
 
@@ -151,7 +153,7 @@ export class AppService {
 
 Ce service expose simplement une méthode retournant la chaîne `Hello World!`.
 
-## Un contrôleur
+### Un contrôleur
 
 Un contrôleur basique est également généré lors de l'installation.
 
@@ -182,5 +184,30 @@ Il appelle notre service `AppService` afin d'afficher la chaîne `Hello World!`.
 Ce contrôleur montre un exemple d'injection de dépendance par constructeur. Nest propose également l'[injection de dépendance sur des propriétés](https://docs.nestjs.com/providers) \(section _**Property-based injection**_\), mais cette méthode n'est pas conseillée par l'équipe Nest.
 {% endhint %}
 
+## Lancer le serveur
 
+C'est simple : 
+
+```bash
+$ npm run start:dev
+
+> nest-tutorial@0.0.0 start:dev /nest-tutorial/project
+> nodemon
+
+[nodemon] 1.18.6
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching: /nest-tutorial/project/src/**/*
+[nodemon] starting `ts-node -r tsconfig-paths/register src/main.ts`
+[Nest] 31181   - 27/11/2018 à 12:01:04   [NestFactory] Starting Nest application...
+[Nest] 31181   - 27/11/2018 à 12:01:04   [InstanceLoader] AppModule dependencies initialized +0ms
+[Nest] 31181   - 27/11/2018 à 12:01:04   [RoutesResolver] AppController {/}: +22ms
+[Nest] 31181   - 27/11/2018 à 12:01:04   [RouterExplorer] Mapped {/, GET} route +3ms
+[Nest] 31181   - 27/11/2018 à 12:01:04   [NestApplication] Nest application successfully started +2ms
+```
+
+On accède au serveur via l'adresse [http://localhost:3000/](http://localhost:3000/).
+
+{% hint style="info" %}
+Relancez le serveur en tapant `rs` dans le terminal pour relancer la compilation et le serveur.
+{% endhint %}
 
