@@ -20,5 +20,3 @@ A l'instar de [Symfony 4](https://symfony.com/4), Nest mets en pratique des conc
 
 Pour être à l'aise avec ce framework, il faut connaitre le javascript \(node.js\) ainsi que le Typescript. Une expérience en Angular est un avantage car l'utilisation de l'outil en ligne de commande, [nest-cli](https://github.com/nestjs/nest-cli), à été énormément inspiré d'[angular-cli](https://cli.angular.io/).
 
-{% page-ref page="installation.md" %}
-
