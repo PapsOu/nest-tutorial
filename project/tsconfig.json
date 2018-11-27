@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strict": true,
     "module": "commonjs",
     "declaration": true,
     "noImplicitAny": false,
@@ -11,7 +12,15 @@
     "target": "es6",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./"
+    "baseUrl": "./src",
+    "paths": {
+      "@common/*": [
+        "common/*"
+      ],
+      "@user/*": [
+        "user/*"
+      ]
+    }
   },
   "include": [
     "src/**/*"
