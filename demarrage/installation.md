@@ -55,7 +55,7 @@ CREATE /nest-tutorial/nest-cli.json (84 bytes)
 🚀  Successfully created project nest-tutorial
 👉  Get started with the following commands:
 
-$ cd nest-tutorial
+$ cd nest-tutorial/
 $ npm run start
 ```
 
