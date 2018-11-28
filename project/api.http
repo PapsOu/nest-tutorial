@@ -1,5 +1,5 @@
 @host = http://localhost:3000
-@token = 4fbc7bef62b34c8e847574517c8e5d914d2c00deb59cca0bbbb2d4b64e6f445dc5df35f4ac0329efbe1ae79ca4cd481c
+@token = 704e3ad879734b6cb1d15f7129ac59777967a4321c8d8607b238aceb11a7784aaa784817faba807e822078df6108f231
 
 ### CREATE DUMMY USER
 
@@ -20,9 +20,7 @@ Content-Type: application/json
 PUT {{host}}/auth/refresh
 Authorization: Bearer {{token}}
 
-{}
-
-### REFRESH A TOKEN
+### INVALIDATE A TOKEN
 
 DELETE {{host}}/auth/invalidate
 Authorization: Bearer {{token}}
