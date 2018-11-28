@@ -16,19 +16,16 @@
 
 ## Créer une API
 
-* [Authentification](creer-une-api/todo-authentification.md)
-* [\[TODO\] Enveloppe](creer-une-api/todo-enveloppe.md)
-* [\[TODO\] Gestion des exceptions](creer-une-api/todo-gestion-des-exceptions.md)
-* [\[TODO\] Gestion de resource](creer-une-api/todo-gestion-de-resource.md)
+* [Authentification](creer-une-api/authentification.md)
+* [Enveloppe](creer-une-api/enveloppe.md)
+* [\[TODO\] Gestion des exceptions](creer-une-api/gestion-des-exceptions.md)
+* [\[TODO\] Gestion de resource](creer-une-api/gestion-de-resource.md)
 
 ## Cas concret - gestion d'utilisateur
 
-* [\[TODO\] Modèles](cas-concret/todo-modeles.md)
-* [\[TODO\] Points d'entrée de l'API](cas-concret/todo-points-dentree-de-lapi.md)
-* [\[TODO\] Services](cas-concret/todo-services.md)
-
-## Tests e2e
-
-* [\[TODO\] Supertest](tests-e2e/todo-supertest.md)
-* [\[TODO\] Tests de l'API](tests-e2e/todo-tests-de-lapi.md)
+* [Besoins et tests](cas-concret/besoins-et-tests.md)
+* [\[TODO\] Modèles](cas-concret/modeles.md)
+* [\[TODO\] Services](cas-concret/services.md)
+* [\[TODO\] Points d'entrée de l'API](cas-concret/points-dentree-de-lapi.md)
+* [\[TODO\] Tests e2e](cas-concret/todo-tests-e2e.md)
 

@@ -501,7 +501,7 @@ Et voila, nous sommes déconnecté.
 ### Note importante
 
 {% hint style="danger" %}
-L'API mise en place dans cet article est un exemple volontairement simplifié d'une API REST. Elle présente beaucoup de failles de sécurité au niveau de la gestion du jeton.
+L'API mise en place dans cet article est un exemple volontairement simplifié d'une API REST. Elle présente beaucoup de failles de sécurité, notamment au niveau de la gestion du jeton.
 {% endhint %}
 
 Par exemple, le rafraîchissement du jeton ne doit pas se réaliser avec le même jeton qui sert à identifier l'utilisateur. 
