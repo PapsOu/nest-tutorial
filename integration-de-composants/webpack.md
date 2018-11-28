@@ -4,6 +4,10 @@ description: Intégration de webpack pour le développement
 
 # Webpack
 
+{% hint style="danger" %}
+Article en cours de rédaction
+{% endhint %}
+
 ### Webpack
 
 [Webpack](https://webpack.js.org/) permet de compiler et déployer l'application de façon plus avancée qu'avec le [transpileur](https://fr.wiktionary.org/wiki/transpileur) \(tsc\) seul.

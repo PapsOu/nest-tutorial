@@ -4,6 +4,10 @@ description: Intégration de Passport pour gérer l'authentification à notre AP
 
 # Authentification
 
+{% hint style="danger" %}
+Article en cours de rédaction
+{% endhint %}
+
 ## Règles à implémenter
 
 Prenons comme exemple la création d'une API. Les utilisateurs s'authentifieront à l'aide de leur nom d'utilisateur \(ou leur email\) et leur mot de passe. L'authentification sera gérée sous la forme d'un jeton généré et unique.

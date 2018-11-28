@@ -4,6 +4,10 @@ description: Validation des modèles de transfert
 
 # Validation
 
+{% hint style="danger" %}
+Article en cours de rédaction
+{% endhint %}
+
 ### Validation
 
 Basé sur le composant [class-validator](https://github.com/typestack/class-validator), un Pipe prêt à l'emploi est intégrable à toute l'application afin de permettre une validation de tout objet utilisant les [décorateurs de validation](https://github.com/typestack/class-validator#validation-decorators).

@@ -4,6 +4,10 @@ description: Intégration d'un ORM
 
 # TypeORM
 
+{% hint style="danger" %}
+Article en cours de rédaction
+{% endhint %}
+
 ### TypeORM
 
 Le composant d'[ORM](https://fr.wikipedia.org/wiki/Mapping_objet-relationnel) [TypeORM](http://typeorm.io) est l'un des ORMs les plus complets pour l’environnement node.js. Pour ceux qui connaissent [Doctrine](https://www.doctrine-project.org/projects/orm.html), l'ORM le plus connu pour php, vous ne serez pas trop dépaysés avec TypeORM.
