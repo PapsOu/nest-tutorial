@@ -13,10 +13,10 @@
 * [Dotenv](integration-de-composants/dotenv.md)
 * [Validation](integration-de-composants/validation.md)
 * [TypeORM](integration-de-composants/typeorm.md)
-* [\[TODO\] Authentification](integration-de-composants/todo-authentification.md)
 
 ## Créer une API
 
+* [Authentification](creer-une-api/todo-authentification.md)
 * [\[TODO\] Enveloppe](creer-une-api/todo-enveloppe.md)
 * [\[TODO\] Gestion des exceptions](creer-une-api/todo-gestion-des-exceptions.md)
 * [\[TODO\] Gestion de resource](creer-une-api/todo-gestion-de-resource.md)
