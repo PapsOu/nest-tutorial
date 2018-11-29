@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>430</x>
+      <y>350</y>
+      <w>180</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+Resource
+--
+~id: number</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>430</x>
+      <y>470</y>
+      <w>450</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+ResourceRepository
+--
+~repository: Repository&lt;Resource&gt;
+--
++findOneById(id: number): Resource | null
++findByPaginated(criteria: any, paginationData: any): PaginatedResources</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>700</x>
+      <y>350</y>
+      <w>180</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+PaginatedResources
+--
++resources: Array&lt;Resource&gt;
++page: number
++nbPages: number
++nbResults: number
++nbResultsPerPage: number</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
