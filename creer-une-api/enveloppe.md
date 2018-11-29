@@ -32,7 +32,7 @@ Il faut donc que les clients puissent détecter la présence d'une erreur sans s
 
 Nous allons implémenter cette enveloppe dans le module `@common`.
 
-## Définition des DTOs
+## Définition des DTO
 
 Nous venons de distinguer 3 cas à gérer. Nous allons donc créer 3 modèles couvrant ces cas.
 
@@ -49,31 +49,58 @@ $ nest generate class common/api/dto/envelope
 {% code-tabs %}
 {% code-tabs-item title="src/common/api/dto/envelope.dto.ts" %}
 ```typescript
-import { Pagination } from "@common/api/dto/pagination.dto";
-import { Errors } from "@common/api/dto/errors.dto";
+import { PaginationEnvelope } from "@common/api/dto/pagination-envelope.dto";
+import { ErrorEnvelope } from "@common/api/dto/error-envelope.dto";
 
 export class Envelope {
 
   /**
    * The response payload
    *
-   * @type {(Array<any>|any|null)}
+   * @type {(Array<any> | any | null)}
    */
-  public readonly data: Array<any>|any|null = null
+  public data: Array<any> | any | null = null
 
   /**
    * The response pagination
    *
-   * @type {(Pagination|null)}
+   * @type {(PaginationEnvelope | null)}
    */
-  public readonly pagination: Pagination|null = null
+  public pagination: PaginationEnvelope | null = null
 
   /**
    * The response errors
    *
-   * @type {(Errors|null)}
+   * @type {(ErrorEnvelope | null)}
    */
-  public readonly errors: Errors|null = null
+  public error: ErrorEnvelope | null = null
+
+  /**
+   * Sets a single resource
+   *
+   * @param {*} resource
+   */
+  public setData(resource: any): void {
+    this.data = resource
+  }
+
+  /**
+   * Sets pagination
+   *
+   * @param {PaginationEnvelope} pagination
+   */
+  public setPagination(pagination: PaginationEnvelope): void {
+    this.pagination = pagination
+  }
+
+  /**
+   * Sets error
+   *
+   * @param {ErrorEnvelope} error
+   */
+  public setError(error: ErrorEnvelope): void {
+    this.error = error
+  }
 }
 ```
 {% endcode-tabs-item %}
@@ -95,9 +122,9 @@ $ nest generate class common/api/dto/pagination
 ```
 
 {% code-tabs %}
-{% code-tabs-item title="src/common/api/dto/pagination.dto.ts" %}
+{% code-tabs-item title="src/common/api/dto/pagination-envelope.dto.ts" %}
 ```typescript
-export class Pagination {
+export class PaginationEnvelope {
 
   /**
    * Current page number
@@ -142,11 +169,11 @@ $ nest generate class common/api/dto/errors
 ```
 
 {% code-tabs %}
-{% code-tabs-item title="src/common/api/dto/errors.dto.ts" %}
+{% code-tabs-item title="src/common/api/dto/error-envelope.dto.ts" %}
 ```typescript
 import { HttpStatus } from "@nestjs/common";
 
-export class Errors {
+export class ErrorEnvelope {
 
   /**
    * The error / exception message
@@ -184,7 +211,7 @@ Nous avons fait nos DTO pour les réponses de l'API.
 
 Les réponses auront cette structure json selon les différents cas identifiés au début de cette section :
 
-#### Une seul resource
+#### Une seule resource
 
 ```javascript
 {
@@ -193,7 +220,7 @@ Les réponses auront cette structure json selon les différents cas identifiés 
     "name": "A single resource"
   },
   "pagination": null,
-  "errors": null
+  "error": null
 }
 ```
 
@@ -214,7 +241,7 @@ Les réponses auront cette structure json selon les différents cas identifiés 
     "nbResults": 2
     "nbResultsPerPage": 50
   },
-  "errors": null
+  "error": null
 }
 ```
 
@@ -224,7 +251,7 @@ Les réponses auront cette structure json selon les différents cas identifiés 
 {
   "data": null,
   "pagination": null,
-  "errors": {
+  "error": {
     "message": "An error occurred",
     "code": 500,
     "data": null,
@@ -235,6 +262,14 @@ Les réponses auront cette structure json selon les différents cas identifiés 
 }
 ```
 
+Nous voyons donc clairement les 3 formes particulières des réponses de notre API. Les clients se baseront donc sur ce format. 
+
+{% hint style="success" %}
+C'est un **contrat** passé entre l'**API** et leur **consommateurs**, qu'il faut décrire et maintenir.
+
+Tout changement de structure sera considéré comme un changement majeur de l'API, et donc il faudra réaliser un saut de version majeure si, par exemple, des champs existants sont modifiés.
+{% endhint %}
+
 ## Service de construction
 
 Nous allons maintenant créer un service qui se chargera d'instancier notre enveloppe et d'y attacher les données.
@@ -244,6 +279,14 @@ Générons notre service :
 ```bash
 $ nest generate service common/api/service/envelope --flat
 ```
+
+Il possédera 3 méthodes publiques :
+
+* `mapSingleResource`: intègre une simple resource dans l'envelope
+* `mapMultipleResources`: intègre plusieurs resources dans l'envelope avec leur pagination
+* `mapErrorOrException`: intègre une exception ou des erreurs dans l'envelope
+
+// TODO
 
 ## Intercepter les réponses
 

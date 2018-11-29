@@ -4,10 +4,6 @@ description: Intégration de Passport pour gérer l'authentification à notre AP
 
 # Authentification
 
-{% hint style="danger" %}
-Article en cours de rédaction
-{% endhint %}
-
 ## Règles à implémenter
 
 Prenons comme exemple la création d'une API. Les utilisateurs s'authentifieront à l'aide de leur nom d'utilisateur \(ou leur email\) et leur mot de passe. L'authentification sera gérée sous la forme d'un jeton généré et unique.
@@ -386,6 +382,8 @@ export class TokenController {
 {% endcode-tabs %}
 
 ## Utilisation de l'API
+
+// TODO: Mettre à jour avec l'enveloppe d'API
 
 {% hint style="info" %}
 Si vous utilisez [Visual Studio Code](https://code.visualstudio.com/), une extension de client REST intégré à l'IDE facilite grandement les interactions avec une API pendant son développement : [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client).

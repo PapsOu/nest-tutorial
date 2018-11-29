@@ -16,10 +16,10 @@
 
 ## Créer une API
 
-* [Authentification](creer-une-api/authentification.md)
+* [Gestion de resource](creer-une-api/gestion-de-resource.md)
 * [Enveloppe](creer-une-api/enveloppe.md)
+* [Authentification](creer-une-api/authentification.md)
 * [\[TODO\] Gestion des exceptions](creer-une-api/gestion-des-exceptions.md)
-* [\[TODO\] Gestion de resource](creer-une-api/gestion-de-resource.md)
 
 ## Cas concret - gestion d'utilisateur
 

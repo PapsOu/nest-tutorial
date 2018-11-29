@@ -4,10 +4,6 @@ description: Configuration de l'application avec des composants utiles
 
 # Configuration
 
-{% hint style="danger" %}
-Article en cours de rédaction
-{% endhint %}
-
 ## Configuration Typescript
 
 ### Custom paths

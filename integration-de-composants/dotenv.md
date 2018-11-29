@@ -4,10 +4,6 @@ description: Gestion des paramètres d'environnement
 
 # Dotenv
 
-{% hint style="danger" %}
-Article en cours de rédaction
-{% endhint %}
-
 ### Dotenv
 
 Le composant [dotenv](https://github.com/motdotla/dotenv) permet d'exploiter des fichiers de configuration définissant des variables d’environnement, généralement nommés `.env`, comme son nom l'indique _\(dot = point\)_.
