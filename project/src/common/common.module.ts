@@ -1,14 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CommonService } from './common.service';
-import { EnvelopeService } from './api/service/envelope.service';
+import { CommonService } from '@common/common.service';
+import { EnvelopeService } from '@common/api/service/envelope.service';
 
 @Module({
   providers: [
-  CommonService,
-  EnvelopeService]
+    CommonService,
+    EnvelopeService
+  ]
 })
-export class CommonModule {
-  public test(): string {
-    return 'test';
-  }
-}
+export class CommonModule { }

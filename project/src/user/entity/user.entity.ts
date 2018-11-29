@@ -1,11 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import { Column, Entity, OneToOne, JoinColumn } from "typeorm";
 import { Token } from "@auth/entity/token.entity";
+import { AbstractResource } from "@common/api/resource/abstract-resource";
 
 @Entity()
-export class User {
-
-  @PrimaryGeneratedColumn()
-  id!: number
+export class User extends AbstractResource {
   
   @Column("varchar", {
     length: 128,

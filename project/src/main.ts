@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
+import { EnvelopeInterceptor } from '@common/api/interceptor/envelope-interceptor';
+import { EnvelopeService } from '@common/api/service/envelope.service';
 
 declare const module: any;
 
@@ -13,6 +15,13 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true // When validating DTO, force transformation of data into a DTO class
     })
+  )
+
+  // Map all responses to the API envelope
+  app.useGlobalInterceptors(
+    new EnvelopeInterceptor(
+      new EnvelopeService()
+    )
   )
 
   await app.listen(3000);

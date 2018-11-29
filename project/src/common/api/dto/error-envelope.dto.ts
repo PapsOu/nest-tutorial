@@ -14,7 +14,7 @@ export class ErrorEnvelope {
    *
    * @type {number}
    */
-  public code: number = HttpStatus.INTERNAL_SERVER_ERROR
+  public code: number
 
   /**
    * The optional specific data
@@ -29,4 +29,16 @@ export class ErrorEnvelope {
    * @type {*}
    */
   public trace: any
+
+  constructor(
+    message: string,
+    code?: number,
+    data?: any,
+    trace?: any
+  ) {
+    this.message = message
+    this.code = code ? code : HttpStatus.INTERNAL_SERVER_ERROR
+    this.data = data
+    this.trace = trace
+  }
 }
