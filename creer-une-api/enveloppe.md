@@ -4,10 +4,6 @@ description: Normaliser les échanges avec l'API
 
 # Enveloppe
 
-{% hint style="danger" %}
-Article en cours de rédaction
-{% endhint %}
-
 ## Objectif
 
 L'objectif d'une enveloppe d'API est de normaliser son format de réponse.
@@ -152,7 +148,19 @@ export class PaginationEnvelope {
    *
    * @type {number}
    */
-  public nbResultsPerPage: number = 50
+  public nbResultsPerPage: number = Number(process.env.PAGINATION_DEFAULT_LIMIT)
+  
+  constructor(
+    page: number,
+    nbPages: number,
+    nbResults: number,
+    nbResultsPerPage: number
+  ) {
+    this.page = page
+    this.nbPages = nbPages
+    this.nbResults = nbResults
+    this.nbResultsPerPage = nbResultsPerPage
+  }
 }
 ```
 {% endcode-tabs-item %}
@@ -187,7 +195,7 @@ export class ErrorEnvelope {
    *
    * @type {number}
    */
-  public code: number = HttpStatus.INTERNAL_SERVER_ERROR
+  public code: number
 
   /**
    * The optional specific data
@@ -202,6 +210,18 @@ export class ErrorEnvelope {
    * @type {*}
    */
   public trace: any
+
+  constructor(
+    message: string,
+    code?: number,
+    data?: any,
+    trace?: any
+  ) {
+    this.message = message
+    this.code = code ? code : HttpStatus.INTERNAL_SERVER_ERROR
+    this.data = data
+    this.trace = trace
+  }
 }
 ```
 {% endcode-tabs-item %}
@@ -286,9 +306,178 @@ Il possédera 3 méthodes publiques :
 * `mapMultipleResources`: intègre plusieurs resources dans l'envelope avec leur pagination
 * `mapErrorOrException`: intègre une exception ou des erreurs dans l'envelope
 
-// TODO
+{% code-tabs %}
+{% code-tabs-item title="src/common/api/service/envelope.service.ts" %}
+```typescript
+import { Injectable, HttpException } from '@nestjs/common';
+import { Envelope } from '@common/api/dto/envelope.dto';
+import { PaginatedResources } from '@common/api/resource/paginated-resources';
+import { PaginationEnvelope } from '@common/api/dto/pagination-envelope.dto';
+import { ErrorEnvelope } from '@common/api/dto/error-envelope.dto';
+
+@Injectable()
+export class EnvelopeService {
+
+  public mapSingleResource(resource: any): Envelope {
+    const envelope = this.getEnvelope()
+
+    envelope.setData(resource)
+
+    return envelope
+  }
+
+  public mapMultipleResources(resources: PaginatedResources): Envelope {
+    const envelope = this.getEnvelope()
+
+    envelope.setData(resources.resources)
+
+    envelope.setPagination(
+      new PaginationEnvelope(
+        resources.page,
+        resources.nbPages,
+        resources.nbResults,
+        resources.nbResultsPerPage
+      )
+    )
+
+    return envelope
+  }
+
+  public mapErrorOrException(error: Error|HttpException): Envelope {
+    const envelope = this.getEnvelope()
+
+    if (error instanceof HttpException) {
+      envelope.setError(
+        new ErrorEnvelope(
+          error.message,
+          error.getStatus(),
+          error.name,
+          error.stack
+        )
+      )
+    } else {
+      envelope.setError(
+        new ErrorEnvelope(
+          error.message,
+          undefined,
+          error.name,
+          error.stack
+        )
+      )
+    }
+
+    return envelope
+  }
+
+  private getEnvelope(): Envelope {
+    return new Envelope()
+  }
+}
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
 
 ## Intercepter les réponses
 
 Maintenant, il faut intercepter les réponses des contrôleurs afin de mapper les données dans l'enveloppe.
+
+Nest propose un moyen d'[intercepter les réponses](https://docs.nestjs.com/interceptors) afin de les altérer à l'aide d'un service applicable à toutes les requêtes.
+
+{% code-tabs %}
+{% code-tabs-item title="src/common/api/interceptor/envelope-interceptor.ts" %}
+```typescript
+import { Injectable, NestInterceptor, ExecutionContext, HttpException } from "@nestjs/common";
+import { Observable, throwError } from "rxjs";
+import { EnvelopeService } from "@common/api/service/envelope.service";
+import { map, catchError } from 'rxjs/operators';
+import { Envelope } from "@common/api/dto/envelope.dto";
+import { PaginatedResources } from "@common/api/resource/paginated-resources";
+import { Resource } from "@common/api/resource/resource.interface";
+import { AbstractResource } from "@common/api/resource/abstract-resource";
+
+@Injectable()
+export class EnvelopeInterceptor implements NestInterceptor {
+
+  constructor(
+    private envelopeService: EnvelopeService
+  ) { }
+
+  intercept(
+    context: ExecutionContext,
+    call$: Observable<any>,
+  ): Observable<Envelope> {
+    return call$
+      .pipe(
+        catchError(err => {
+          return throwError(
+            new HttpException(
+              this.mapDataToApiEnvelope(err),
+              err.status
+            )
+          )
+        }),
+        map(data => this.mapDataToApiEnvelope(data))
+      )
+    }
+
+    private mapDataToApiEnvelope(dataOrError: Resource | PaginatedResources | Error | any): Envelope | any {
+      if (dataOrError instanceof PaginatedResources) {
+        return this.envelopeService.mapMultipleResources(dataOrError)
+      } else if (dataOrError instanceof Error) {
+        return this.envelopeService.mapErrorOrException(dataOrError)
+      }
+      return this.envelopeService.mapSingleResource(dataOrError)
+    }
+  }
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+Maintenant, on déclare l'intercepteur dans le point d'entrée de notre application
+
+{% code-tabs %}
+{% code-tabs-item title="src/main.ts" %}
+```typescript
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import * as dotenv from 'dotenv';
+import { AppModule } from './app.module';
+import { EnvelopeInterceptor } from '@common/api/interceptor/envelope-interceptor';
+import { EnvelopeService } from '@common/api/service/envelope.service';
+
+declare const module: any;
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Use global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true // When validating DTO, force transformation of data into a DTO class
+    })
+  )
+
+  // Map all responses to the API envelope
+  app.useGlobalInterceptors(
+    new EnvelopeInterceptor(
+      new EnvelopeService()
+    )
+  )
+
+  await app.listen(3000);
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
+}
+
+dotenv.config(); // Load configuration before bootstrapping
+
+bootstrap();
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+
 

@@ -4,10 +4,6 @@ description: Création du tronc commun des éléments de l'API
 
 # Gestion de resource
 
-{% hint style="danger" %}
-Article en cours de rédaction
-{% endhint %}
-
 ## Qu'est-ce qu'une resource ?
 
 [Roy Thomas Fielding](https://www.ics.uci.edu/~fielding/), dans sa thèse « [Architectural Styles and the Design of Network-based Software Architectures](https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm) » \([Chap. 5](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm#sec_5_2_1_1)\), décrit une resource comme étant :
@@ -90,13 +86,194 @@ L'interface **PaginatedResources** est mise de côté pour simplifier l'article
 
 ## Création des modèles
 
-### Interfaces
+### Resource
 
-#### Resource
-
-```bash
-$ nest generate class common/api/resource/resource
+{% code-tabs %}
+{% code-tabs-item title="src/common/api/resource/resource.interface.ts" %}
+```typescript
+export interface Resource {}
 ```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
 
-// TODO : Continuer...
+### ResourceRepository
+
+{% code-tabs %}
+{% code-tabs-item title="src/common/api/resource/resource-repository.interface.ts" %}
+```typescript
+import { Resource } from "@common/api/resource/resource.interface";
+import { PaginatedResources } from "@common/api/resource/paginated-resources";
+
+export interface ResourceRepository {
+  /**
+   * Finds a resource by its id
+   *
+   * @param {number} id
+   * 
+   * @returns {(Promise<Resource | undefined>)}
+   */
+  findOneById(id: number): Promise<Resource | undefined>
+
+  /**
+   * Performs a paginated query
+   *
+   * @param {*} criteria
+   * @param {PaginationData} paginationData
+   * 
+   * @returns {Promise<PaginatedResources>}
+   */
+  findByPaginated(criteria: any, paginationData: PaginationData): Promise<PaginatedResources>
+}
+
+export interface PaginationData {
+  /**
+   * { field: 'ASC|DESC' }
+   *
+   * @type {*}
+   */
+  order: any
+  offset: number
+  limit: number
+}
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+## Implémentations
+
+Nous allons réaliser des implémentations de base pour couvrir les besoins minimaux.
+
+### AbstractResource
+
+{% code-tabs %}
+{% code-tabs-item title="src/common/api/resource/abstract-resource.ts" %}
+```typescript
+import { Resource } from "@common/api/resource/resource.interface";
+import { PrimaryGeneratedColumn } from "typeorm";
+
+export abstract class AbstractResource implements Resource {
+
+  /**
+   * The resource's unique identifier
+   *
+   * @type {number}
+   */
+  @PrimaryGeneratedColumn()
+  protected id!: number
+}
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+Toutes nos resources auront un identifiant unique avec valeur auto générée. Cette génération est réalisée par TypeORM grâce au décorateur `@PrimaryGeneratedColumn`.
+
+### PaginatedResources
+
+{% code-tabs %}
+{% code-tabs-item title="src/common/api/resource/paginated-resources.ts" %}
+```typescript
+import { Resource } from "@common/api/resource/resource.interface";
+
+export class PaginatedResources {
+  public resources: Array<Resource> = []
+  public page: number = 1
+  public nbPages: number = 1
+  public nbResults: number = 0
+  public nbResultsPerPage: number = Number(process.env.PAGINATION_DEFAULT_LIMIT)
+
+  constructor(
+    resources: Array<Resource>,
+    page: number,
+    nbPages: number,
+    nbResults: number,
+    nbResultsPerPage: number
+  ) {
+    this.resources = resources
+    this.page = page
+    this.nbPages = nbPages
+    this.nbResults = nbResults
+    this.nbResultsPerPage = nbResultsPerPage
+  }
+}
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+Cette classe va permettre de transporter les informations de pagination pour l'enveloppe de l'API \(voir section suivante\).
+
+### AbstractResourceRepository
+
+{% code-tabs %}
+{% code-tabs-item title="src/common/api/resource/abstract-resource-repository.ts" %}
+```typescript
+import { Repository } from "typeorm";
+import { ResourceRepository, PaginationData } from "@common/api/resource/resource-repository.interface";
+import { Resource } from "@common/api/resource/resource.interface";
+import { PaginatedResources } from "@common/api/resource/paginated-resources";
+
+export abstract class AbstractResourceRepository<T extends Resource> implements ResourceRepository {
+
+  constructor(
+    protected repository: Repository<T>
+  ) { }
+
+  public async findOneById(id: number): Promise<T | undefined> {
+    return this.repository.findOne({ where: { id: id }})
+  }
+
+  public async findByPaginated(criteria: any, paginationData: PaginationData): Promise<PaginatedResources> {
+    const queryParameters = {
+      where: criteria,
+      order: paginationData.order,
+      skip: paginationData.offset,
+      take: paginationData.limit
+    }
+
+    const resourcesCount = await this.countResource(criteria)
+
+    let totalPageNumber = Math.ceil(resourcesCount / (paginationData.limit))
+    let currentPageNumber = paginationData.limit
+    let offset = (currentPageNumber - 1) * paginationData.limit
+
+    // Handle the case when the asked page is greater than number of pages
+    if (offset > (totalPageNumber - 1) * paginationData.limit) {
+      offset = (totalPageNumber - 1) * paginationData.limit
+      currentPageNumber = totalPageNumber
+    }
+
+    const resources = await this.repository.find(queryParameters)
+
+    return new PaginatedResources(
+      resources,
+      resourcesCount,
+      totalPageNumber,
+      currentPageNumber,
+      paginationData.limit
+    )
+  }
+
+  /**
+   * Perform a count query with given criteria
+   *
+   * @param {*} criteria
+   * 
+   * @returns {Promise<number>}
+   */
+  private async countResource(criteria: any): Promise<number> {
+    const { resourcesCount } = await this.repository
+      .createQueryBuilder("r")
+      .select("COUNT(*)", "resourcesCount")
+      .where(criteria)
+      .getRawOne()
+
+    return resourcesCount
+  }
+}
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+## Conclusion
+
+Désormais, pour chaque resource de notre API, nous pourrons étendre un repository pour bénéficier des méthodes de pagination et de récupération avec un identifiant. 
 

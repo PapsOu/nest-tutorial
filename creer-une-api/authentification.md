@@ -415,10 +415,14 @@ Date: Wed, 28 Nov 2018 10:33:13 GMT
 Connection: keep-alive
 
 {
-  "email": "test@test.com",
-  "username": "test",
-  "password": "test",
-  "id": 2
+  "data": {
+    "email": "test@test.com",
+    "username": "test",
+    "password": "test",
+    "id": 2
+  },
+  "pagination": null,
+  "error": null
 }
 ```
 
@@ -441,10 +445,14 @@ ETag: W/"9b-HRUy8NSRRYrO4qoOtLPm/lVmDgE"
 Date: Wed, 28 Nov 2018 10:46:52 GMT
 Connection: keep-alive
 
-{
-  "tokenDate": "2018-11-28T10:46:52.358Z",
-  "token": "704e3ad879734b6cb1d15f7129ac59777967a4321c8d8607b238aceb11a7784aaa784817faba807e822078df6108f231",
-  "id": 26
+{  
+  "data": {
+    "tokenDate": "2018-11-28T10:46:52.358Z",
+    "token": "704e3ad879734b6cb1d15f7129ac59777967a4321c8d8607b238aceb11a7784aaa784817faba807e822078df6108f231",
+    "id": 26
+  },
+  "pagination": null,
+  "error": null
 }
 ```
 
@@ -466,10 +474,14 @@ ETag: W/"9b-bXjlorvpODWd3/1DHwOhsYSpHVw"
 Date: Wed, 28 Nov 2018 10:50:17 GMT
 Connection: keep-alive
 
-{
-  "tokenDate": "2018-11-28T10:50:16.951Z",
-  "token": "71e5db44308d4b6fb469ea0759e34d52967a4dcd8beef310366f16e845ad1636378b26a106bc79d6615993ad65419c75",
-  "id": 27
+{  
+  "data": {
+    "tokenDate": "2018-11-28T10:50:16.951Z",
+    "token": "71e5db44308d4b6fb469ea0759e34d52967a4dcd8beef310366f16e845ad1636378b26a106bc79d6615993ad65419c75",
+    "id": 27
+  },
+  "pagination": null,
+  "error": null
 }
 ```
 
@@ -495,7 +507,11 @@ ETag: W/"4-X/5TO4MPCKAyY0ipFgr6/IraRNs"
 Date: Wed, 28 Nov 2018 11:03:54 GMT
 Connection: keep-alive
 
-true
+{
+  "data": true,
+  "pagination": null,
+  "error": null
+}
 ```
 
 Et voila, nous sommes déconnecté.
