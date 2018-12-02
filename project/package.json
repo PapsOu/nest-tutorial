@@ -67,7 +67,8 @@
     "moduleNameMapper": {
       "@auth/(.*)": "<rootDir>/src/auth/$1",
       "@common/(.*)": "<rootDir>/src/common/$1",
-      "@user/(.*)": "<rootDir>/src/user/$1"
+      "@user/(.*)": "<rootDir>/src/user/$1",
+      "@example/(.*)": "<rootDir>/src/example/$1"
     },
     "rootDir": ".",
     "testRegex": ".spec.ts$",

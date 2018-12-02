@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CommonModule } from '@common/common.module';
 import { UserModule } from '@user/user.module';
 import { AuthModule } from '@auth/auth.module';
-
+import { ExampleModule } from '@example/example.module';
 import { User } from '@user/entity/user.entity';
 import { Token } from '@auth/entity/token.entity';
-
 
 @Module({
   imports: [
@@ -28,6 +26,7 @@ import { Token } from '@auth/entity/token.entity';
     AuthModule,
     CommonModule,
     UserModule,
+    ExampleModule,
   ],
   controllers: [
     AppController

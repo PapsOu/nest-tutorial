@@ -22,6 +22,9 @@
       ],
       "@user/*": [
         "user/*"
+      ],
+      "@example/*": [
+        "example/*"
       ]
     }
   },

@@ -1,5 +1,5 @@
 @host = http://localhost:3000
-@token = 76702dd407d842c88ec42a0e0616e9731214d332c00257225f2effea90189ad2d24d4b9963b63e4abb23efa5747e112e
+@token = a541077f55714095bd5e36afe317d67be90b736301df804a9d045dd8d3b76fbb66768b5d3c48ebe4667b7558c2b84140
 
 ### CREATE DUMMY USER
 
@@ -24,3 +24,7 @@ Authorization: Bearer {{token}}
 
 DELETE {{host}}/auth/invalidate
 Authorization: Bearer {{token}}
+
+### EXCEPTION DISPLAY
+
+GET {{host}}/example

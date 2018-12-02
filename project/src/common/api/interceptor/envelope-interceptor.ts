@@ -1,4 +1,4 @@
-import { Injectable, NestInterceptor, ExecutionContext, HttpException } from "@nestjs/common";
+import { Injectable, NestInterceptor, ExecutionContext, HttpException, HttpStatus } from "@nestjs/common";
 import { Observable, throwError } from "rxjs";
 import { EnvelopeService } from "@common/api/service/envelope.service";
 import { map, catchError } from 'rxjs/operators';
@@ -24,7 +24,7 @@ export class EnvelopeInterceptor implements NestInterceptor {
           return throwError(
             new HttpException(
               this.mapDataToApiEnvelope(err),
-              err.status
+              err.status ? err.status : HttpStatus.INTERNAL_SERVER_ERROR
             )
           )
         }),
