@@ -229,6 +229,8 @@ export class ErrorEnvelope {
 
 Nous avons fait nos DTO pour les réponses de l'API.
 
+## Format de l'enveloppe
+
 Les réponses auront cette structure json selon les différents cas identifiés au début de cette section :
 
 #### Une seule resource
@@ -479,5 +481,5 @@ bootstrap();
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-
+Voila, toutes nos réponses seront maintenant affichées avec la structure de l'enveloppe API.
 
