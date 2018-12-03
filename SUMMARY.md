@@ -23,8 +23,8 @@
 ## Cas concret - gestion d'utilisateur
 
 * [Besoins et tests](cas-concret/besoins-et-tests.md)
+* [\[TODO\] Tests e2e](cas-concret/todo-tests-e2e.md)
 * [\[TODO\] Modèles](cas-concret/modeles.md)
 * [\[TODO\] Services](cas-concret/services.md)
 * [\[TODO\] Points d'entrée de l'API](cas-concret/points-dentree-de-lapi.md)
-* [\[TODO\] Tests e2e](cas-concret/todo-tests-e2e.md)
 
