@@ -16,8 +16,7 @@
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --detectOpenHandles"
   },
   "dependencies": {
     "@nestjs/common": "^5.4.0",
@@ -75,7 +74,6 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }
 }
