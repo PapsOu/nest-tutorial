@@ -6,6 +6,16 @@ import { ErrorEnvelope } from '@common/api/dto/error-envelope.dto';
 
 @Injectable()
 export class EnvelopeService {
+  /**
+   * The current environment is development ?
+   * 
+   * @type {boolean}
+   */
+  private devEnv: boolean = false
+
+  constructor() {
+    this.devEnv = process.env.NODE_ENV === 'development'
+  }
 
   public mapSingleResource(resource: any): Envelope {
     const envelope = this.getEnvelope()
@@ -41,7 +51,7 @@ export class EnvelopeService {
           error.message,
           error.getStatus(),
           error.name,
-          error.stack
+          this.devEnv ? error.stack : undefined
         )
       )
     } else {
@@ -50,7 +60,7 @@ export class EnvelopeService {
           error.message,
           undefined,
           error.name,
-          error.stack
+          this.devEnv ? error.stack : undefined
         )
       )
     }
