@@ -76,7 +76,7 @@ Pour chaque story, décrivons les scenarii qui couvrent le besoin exprimé. Nous
 
 Étant donné que je suis connecté à l'API avec des identifiants valides
 
-Quand je requête le point d'entrée de création d'utilisateur
+Quand je requête le point d'entrée de création d'utilisateur, que je fournis un nom d'utilisateur, une adresse email et un mot de passe dans le corps de ma requête
 
 Alors j'obtiens un nouvel utilisateur persisté en base de données et j'obtiens également sa représentation en réponse de ma requête.
 
