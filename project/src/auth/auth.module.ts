@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TokenService } from '@auth/service/token.service';
@@ -16,7 +16,7 @@ import { DefaultStrategy } from '@auth/strategy/default';
     TypeOrmModule.forFeature([
       Token
     ]),
-    UserModule
+    forwardRef(() => UserModule)
   ],
   providers: [
     TokenService,
@@ -24,6 +24,9 @@ import { DefaultStrategy } from '@auth/strategy/default';
   ],
   controllers: [
     TokenController
+  ],
+  exports: [
+    TokenService
   ]
 })
 export class AuthModule {}

@@ -1,7 +1,7 @@
 import { Column, Entity, OneToOne, JoinColumn } from "typeorm";
 import { Token } from "@auth/entity/token.entity";
 import { AbstractResource } from "@common/api/resource/abstract-resource";
-import { PasswordResetToken } from "@user/entity/password-reset-token.entity";
+import { ResetPasswordToken } from "@user/entity/reset-password-token.entity";
 
 @Entity()
 export class User extends AbstractResource {
@@ -30,10 +30,10 @@ export class User extends AbstractResource {
   @JoinColumn()
   token!: Token
 
-  @OneToOne(type => PasswordResetToken, {
+  @OneToOne(type => ResetPasswordToken, {
     cascade: true,
     onDelete: "SET NULL"
   })
   @JoinColumn()
-  passwordResetToken!: PasswordResetToken
+  ResetPasswordToken!: ResetPasswordToken
 }
