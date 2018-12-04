@@ -25,6 +25,6 @@
 * [Besoins et tests](cas-concret/besoins-et-tests.md)
 * [Tests e2e](cas-concret/todo-tests-e2e.md)
 * [Modèles](cas-concret/modeles.md)
-* [\[TODO\] Services](cas-concret/services.md)
+* [\[WIP\] Services](cas-concret/services.md)
 * [\[TODO\] Points d'entrée de l'API](cas-concret/points-dentree-de-lapi.md)
 
