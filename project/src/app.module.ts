@@ -8,6 +8,7 @@ import { AuthModule } from '@auth/auth.module';
 import { ExampleModule } from '@example/example.module';
 import { User } from '@user/entity/user.entity';
 import { Token } from '@auth/entity/token.entity';
+import { PasswordResetToken } from '@user/entity/password-reset-token.entity';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { Token } from '@auth/entity/token.entity';
         database: `${__dirname}/../${process.env.DB_PATH}`,
         entities: [
           User,
-          Token
+          Token,
+          PasswordResetToken
         ],
         synchronize: true,
         keepConnectionAlive: true // Allows using the same connection between reloads with webpack
