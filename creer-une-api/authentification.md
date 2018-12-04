@@ -383,8 +383,6 @@ export class TokenController {
 
 ## Utilisation de l'API
 
-// TODO: Mettre à jour avec l'enveloppe d'API
-
 {% hint style="info" %}
 Si vous utilisez [Visual Studio Code](https://code.visualstudio.com/), une extension de client REST intégré à l'IDE facilite grandement les interactions avec une API pendant son développement : [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client).
 
